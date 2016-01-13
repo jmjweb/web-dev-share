@@ -1,0 +1,16 @@
+body * {font-family: 'Microsoft JhengHei', 'Microsoft YaHei', STHeiti, SimHei;;}
+body code *{font-family: monospace !important;}
+.draw-board {
+    position: fixed;
+    cursor: url(http://qdemo.sinaapp.com/css/pen.cur),default;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    right: 0;
+ }
+ .tc{text-align: center;}
+ .tl{text-align: left;}
+ .tr{text-align: right;}
+ .red{color: red;}
+ .fb{font-weight: bold;;}
+ span{font-weight: normal;}

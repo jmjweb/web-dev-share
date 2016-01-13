@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/league.css" id="theme">
+	<link rel="stylesheet" href="plugin/highlight/styles/agate.css">
+	<link rel="stylesheet" href="css/test.css">
+</head>
+<body>
+	<div class="reveal">
+	    <div class="slides">
+
+
+	    	<section data-background="source/reveal-parallax-1.jpg">
+				<h1><span>web</span>前端分享会</h1>
+				<h3>——团队开发的建议及实践</h3>
+				<p>
+					<small>Created by <a href="https://github.com/jmjweb" target="_blank">江大侠</a></small>
+				</p>
+	        </section>
+	        <section data-background="source/reveal-parallax-1.jpg">
+                <h2>分享内容</h2>
+                <ul>
+                    <li class="fb"><a href="#/2">JS作用域及函数模块化</a></a></li>
+                    <li class="fragment fb"><a href="#/7">变量的命名规则及建议</a></li>
+                    <li class="fragment fb"><a href="#/13">用原生DOM API替代jQuery</a></li>
+                    <li class="fragment fb"><a href="#/16">网站性能及细节优化 </a></li>
+                    <li class="fragment fb"><a href="#/18">善用插件及重复造轮——团队合作效率的提高</a></li>
+                </ul>
+            </section>
+
+
+
+            <section>
+            	<section>
+            		<img src="source/ceo.jpg" height="300" width="544" alt="">
+            	</section>
+            	<section>
+            		<img src="source/so-happy.png" height="405" width="720" alt="">
+            	</section>            	
+            </section>
+            <section>
+            	<img src="source/xq.jpg" height="269" alt="">
+            </section>
+
+
+
+
+
+
+            <section data-background="source/reveal-parallax-1.jpg">
+            	<h2>JS变量的作用域和模块化</h2>
+            </section>
+            <section class="tl">
+            	<section>
+            		<h3>1、尽量避免全局变量</h3>
+            	</section>
+            	<section>
+            		<p>JS里变量没有使用范围，任何变量，函数，数组，对象，只要不在函数内部，都被认为是全局的</p>
+					<p class="fragment">为防止变量的污染，解决办法：</p>
+					<p class="fragment fb">根据js的作用域规则，函数外部无法访问内部的变量。所以把变量放在一个匿名函数内部，定义完之后立即调用它</p>
+            	</section>
+            	<section>
+            		<p>例如:</p>
+					<p>下面的写法将会产生三个全局变量和两个全局函数：</p>
+					<pre><code class="javascript">
+var name = 'jmj';
+var age = '23';
+var status = 'single';
+function createGirl(){
+	// your code
+}
+function getGirlDetails(){
+	// your code
+}
+					</code></pre>	 
+				</section>
+				<section>
+					<p>解决：</p>
+					<pre><code class="javascript">
+;(function(){
+	var name = 'jmj';
+	var age = '23';
+	var status = 'single';
+	function createGirl(){
+		// your code
+	}
+	function getGirlDetails(){
+		// your code
+	}
+})();
+					</code></pre>	
+				</section> 
+				<section class="tc">
+					<img src="source/function.jpg" height="384" width="483" alt="">
+				</section>
+				<section>
+					<p>如果你想在函数外面也能使用里面的东西，那就要做些修改:</p>
+					<pre><code class="javascript">
+var myApplication = function(){
+	var name = 'jmj';
+	var age = '23';
+	var status = 'single';
+	return{
+		createGirl: function(){
+			// your code
+		},
+		getGirlDetails: function(){
+			// your code
+		}
+	}
+}();
+//使用：
+myApplication.createGirl();
+myApplication.getGirlDetails();
+					</code></pre>	
+				</section>
+			</section>
+			<section class="tl">
+            	<section>
+            		<h3>2、函数模块化</h3>
+            	</section>
+				<section>
+					<p>定义全局函数：</p>
+					<pre><code class="javascript">
+window.FUN = {};
+var FUN = {
+	search: function(){},
+	currency: function(){},
+	cart: function(){}
+	//some....
+}
+//使用：
+FUN.search();
+FUN.currency();
+FUN.cart();
+					</code></pre>	
+				</section>
+				<section>
+					<p>或者：</p>
+					<pre><code class="javascript">
+FUN.cart = {
+	addCart: function(){},
+	miniCart: function(){}
+	//some...
+}
+
+FUN.cart.addCart();
+FUN.cart.miniCart();
+					</code></pre>	
+				</section>
+            </section>
+
+
+
+
+
+
+
+
+            <section data-background="source/reveal-parallax-1.jpg">
+            	<h2>变量的命名规则及建议</h2>
+            </section>
+            <section>            
+            	<section>
+	            	<p>在同一个函数内部，局部变量的声明建议置于顶端</p>
+					<pre><code class="javascript">
+ // 孬
+ var clear = function(el) {
+    var id = el.id;
+
+    //your code
+
+    var name = el.getAttribute("data-name");
+
+    //your code
+
+    return true;
+ }
+					</code></pre>            	
+	            </section>
+            	<section>
+	            	<p>便于其他人查阅代码时，一眼看出此函数所使用的所有变量</p>
+					<pre><code class="javascript">
+ // 好
+ var clear = function(el) {
+     var id = el.id,
+         name = el.getAttribute("data-name");
+
+     //your code
+     return true;
+ }
+					</code></pre>            	
+	            </section>
+	        </section>
+	        <section>
+	        	<p>使用变量前，要判断它是否存在/定义</p>
+				<pre><code class="javascript">
+FUN.methodName = function(a){
+	var a = a || 1;
+	//或
+	var a = arguments.length >= 1 ? a : 1;
+	//或
+	var a = typeof a==='undefined' ? 1 : a;
+	
+	//总结：使用变量名得有个备胎，防止报错
+}
+				</code></pre>
+	        </section>
+	        <section>
+	        	<section>
+		        	<p>缓存变量</p>
+					<pre><code class="javascript">
+// 孬
+var
+	a = $('#container'),
+	b = $('#container li'),
+	c = $('#container li span');
+					</code></pre>
+					<pre><code class="javascript">
+// 好
+var
+	a = $('#container '),
+	b = a.find('li'),
+	c = b.find('span');	
+					</code></pre>	        		
+	        	</section>
+	        	<section>
+		        	<p>缓存变量</p>
+					<pre><code class="javascript">
+//孬	 
+var h = $('#element').height();
+$('#element').css('height',h-20);
+					</code></pre>
+					<pre><code class="javascript">
+//好	 
+var e = $('#element');
+var h = $element.height();
+e.css('height',h-20);
+// some code 下面可能又有用到变量e的地方	
+					</code></pre>	        		
+	        	</section>
+        		<section>
+		        	<p>尤其函数内部使用this或者$(this)时：</p>
+					<pre><code class="javascript">
+var that = $(this);
+//或者
+var _self = $(this);
+					</code></pre>
+				</section>
+				<section>
+					<pre><code class="javascript">
+//孬
+$('.select-item').on('click', '.tit', function() {
+	if(!$(this).hasClass('on')){
+		$(this).siblings('ul').show();
+	}else{
+		$(this).siblings('ul').hide();
+	}        
+});	
+					</code></pre>	
+					<pre><code class="javascript">
+//好
+$('.select-item').on('click', '.tit', function() {
+	var that = $(this);
+	if(!that.hasClass('on')){
+		that.siblings('ul').show();
+	}else{
+		that.siblings('ul').hide();
+	}        
+});
+					</code></pre>
+				</section> 
+	        </section>
+	        <section>
+		        <section>
+		        	<ul>
+			        	<li class="tl">-用清晰，周到，适当的HTML类名。名称应该体现HTML和CSS文件的信息。</li>
+			        	<li class="fragment tl">-避免很系统地使用类名缩写，这会让事情变得难以理解。</li>
+		        	</ul>
+	        	</section>
+	        	<section>
+					<pre><code class="css">
+/* 孬的： */
+.s-scr {
+  overflow: auto;
+}
+.cb {
+  background: #000;
+}
+					</code></pre>
+					<pre><code class="css">
+/* 好的：*/
+.is-scrollable {
+    overflow: auto;
+}
+.column-body {
+    background: #000;
+}
+					</code></pre>
+	        	</section>
+	        	<section>
+					<pre><code class="javascript">
+//孬的：
+function unit(){
+	//your code
+}
+					</code></pre>
+					<pre><code class="javascript">
+//好的:
+function getUnitList(){
+	//your code
+}
+					</code></pre>
+	        	</section>	        		
+	        </section>
+	        <section>
+	        	<section>
+	        		<h3>js与css命名规则的不同</h3>
+	        	</section>
+	        	<section class="tl">
+	        		<ul>
+		        		<li>javascript:</li>
+		        		<li>使用驼峰式或者下划线：getElementById、querySelector</li>
+						<li>全局函数、全局变量可以考虑用全大写 (COOKIESDOMAIN,CART,DIST_URL)</li>
+					</ul>
+	        	</section>
+	        	<section class="tl">
+	        		<ul>
+		        		<li>css:</li>
+		        		<li>css的class命名中尽量不出现大写字母，（必须）采用中划线” - “对class中的字母分隔</li>
+		        		<li>产品线-产品-模块-子模块</li>
+	        		</ul>
+	        	</section>
+	        	<section>
+					<pre><code class="css">
+ /* 孬的： */
+ .hotelTitle {
+     font-weight: bold;
+ }
+					</code></pre> 
+					<pre><code class="css">
+ /* 好的：*/
+ .hotel-title {
+     font-weight: bold;
+ }
+					</code></pre>     		
+	        	</section>
+	        	<section class="tl">
+	        		<ul>
+		        		<li>为什么：</li>
+		        		<li class="">查阅一些资料、文章：bootstrap、jQuery</li>
+		        		<li class="fragment">js方法：getElementById() setAttribute()</li>
+		        		<li class="fragment">css属性：background-color， line-height</li>
+	        		</ul>
+	        	</section>
+	        </section>
+
+
+
+
+
+
+
+
+
+	        <section data-background="source/reveal-parallax-1.jpg">
+            	<h2>用原生<span>DOM API</span>替代<span>jQuery</span></h2>
+            </section>
+            <section class="tl">
+	            <p>原因：</p>
+	            <ul>
+	            	<li>jQuery能做的事情，同样可以用原生代码来做，必要时组合jquery和js 例如this.value代替$(this).val()</li>
+					<li class="fragment">个人技术的提升（学好原理，不管框架如何变，我自岿然不动 ）</li>
+					<li class="fragment">牢记没有任何框架能比原生代码更小，更轻，更高效</li>
+					<li class="fragment">提高逼格</li>
+				</ul>
+            </section>
+            <section>
+            	<section>            	
+            		<p>用js代替jQuery举例：</p>
+					<pre><code class="javascript">
+//jQuery:
+$('#myElement');
+//js:
+// IE 5.5+
+document.getElementById('myElement');
+// IE 8+
+document.querySelector('#myElement');
+					</code></pre> 
+				</section>
+            	<section>            	
+            		<p>用js代替jQuery举例：</p>
+					<pre><code class="javascript">
+//jQuery:
+$('.myElement');
+//js:
+// IE 9+
+document.getElementsByClassName('myElement');
+// IE 8+ 
+document.querySelectorAll('.myElement');
+					</code></pre> 
+				</section>
+            	<section>            	
+            		<p>此DOM API还有以下用法(就像css选择器一样):</p>
+					<pre><code class="javascript">
+document.querySelectorAll('div');
+document.querySelectorAll('[data-name="hello"]');
+document.querySelectorAll('#mainWrap > div')
+//感兴趣搜索其它语法
+					</code></pre> 
+				</section>
+            	<section>            	
+            		<p>利用这些特性简单的封装一下：</p>
+					<pre><code class="javascript">
+window.$ = function(selector) {
+    var selectorType = 'querySelectorAll';
+    return document[selectorType](selector);
+};
+$('#mainWrap')
+$('div')
+$('[data-name="hello"]')
+$('#mainWrap > div')
+//jQuery内部就是通过这个DOM API封装的选择器，不过有作其它兼容性处理，在此不多讨论
+					</code></pre> 
+				</section>
+            </section>
+
+
+
+
+
+
+
+
+	        <section data-background="source/reveal-parallax-1.jpg">
+            	<h2>网站性能及细节优化</h2>
+            </section>
+            <section class="tl">
+            	<section>
+            		<p class="fb">网速慢怎么办? 异步表单提交的时候 onsubmit="return false"</p>
+            	</section>
+            	<section>
+            		<p class="fb">提交事件绑定在form标签上的submit，而不是click</p>
+            	</section>
+            	<section>
+            		<p class="fb">异步操作的时候，需要有loading状态 按钮加上disabled、cursor （例如：加入购物车方法，按下按钮后，需要禁用按钮，有一个等待状态，此时按钮无事件）</p>
+            	</section>
+            	<section>
+            		<p class="fb">使用dom前，判断是否存在</p>
+					<pre><code class="javascript">
+if($('element').length){
+	//your code
+}
+					</code></pre> 
+            	</section>
+            	<section>
+            		<p class="fb">表现与结构分离，避免代码耦合</p>
+            		<p class="fb">减少使用$(ele).css('property', 'value')，使用addClass()代替</p>
+            	</section>
+            	<section>
+            		<p class="fb">异步加载js，css也可以异步加载</p>
+					<pre><code class="javascript">
+//定义函数
+FUN.loadCSS = function(url ,callback){
+    var linkLabel = document.createElement('link');
+    linkLabel.rel = 'stylesheet';
+    linkLabel.href = url;
+    document.body.appendChild(linkLabel);
+}
+//使用
+FUN.loadCSS(DIST_URL+'js.plug/swiper.min.css');
+//选择性使用
+element.value ? FUN.loadCSS(DIST_URL+'js.plug/swiper.min.css') : '';
+					</code></pre> 
+            	</section>
+            	<section>
+            		<p class="fb">丢弃HTML5淘汰的标签及属性,如,align, cellspacing, font等;</p>
+            	</section>
+            	<section>
+            		<p class="fb">与后端约定好json格式</p>
+            		<p class="fb">以对象的形式返回回来，而不是字符串</p>
+					<p class="fb">如果是字符串，请使用$.parseJSON而不是eval</p>
+					<pre><code class="json">
+{
+    "status":0,
+    "msg":"success",
+    "data": {
+        "off_price":  "999"
+    }
+}
+					</code></pre> 
+            	</section>
+            	<section>
+            		<p class="fb">内容部分或者重要的内容放在html前面优先加载，再采用float、position等方法布局</p>
+            	</section>
+            	<section>
+            		<p class="fb">因为我们的模板使用的是smarty，所以html不要使用html注释< !-- -->，而使用smarty注释{*  *} 推荐安装sublime插件smarty</p>
+            	</section>
+            	<section>
+            		<p class="fb">公用函数必须写注释 （参数、数据类型、返回值） 推荐sublime插件DocBlockr</p>
+					<pre><code class="javascript">
+/* 
+ * @desc             							加入商品到收藏夹 
+ * @param      {object||string}  obj            点击那个按钮到收藏夹 该按钮需要有属性 gid
+ * @param      {function}        callback       加入成功后，还需要何操作？
+ * @author     jiangminjing
+ * @date 	   2015/05   
+ * @return	   
+ */
+					</code></pre>   	
+            	</section>
+            </section>
+
+
+
+
+
+            <section data-background="source/reveal-parallax-1.jpg">
+            	<h2>善用插件及重复造轮——团队合作效率的提高</h2>
+            </section>            
+            <section>
+            	<img src="source/bz.gif" height="520" alt="">
+            </section>
+            <section>
+            	<ul>
+            		<li>加入购物车</li>
+            		<li>焦点图</li>
+            		<li>固定导航菜单</li>
+            		<li>固定导航菜单</li>
+            		<li>滚动监听</li>
+            		<li>触屏事件</li>
+            		<li>日历控件</li>
+            		<li>瀑布流</li>
+            		<li>图片放大镜</li>
+            		<li>等等.....</li>
+					<li class="fragment">这些重复的事情我们用公用函数、js/jq插件来提高我们的效率及维护团队开发的统一。</li>
+            	</ul>
+            </section>
+            <section class="tl">
+            	<p>公用函数：</p>
+				<pre><code class="javascript">
+GLOBAL.currency.change_houbi();
+GLOBAL.cart.addCart();
+GLOBAL.sign.login();
+				</code></pre> 
+				<p>等等....</p>
+				<p class="fragment">各位同事也可以扩展我们的公用函数写在common.min.js里</p>
+            </section>
+			<section class="tl">
+				<p>js/jq插件：</p>
+				<p>jQuery很方便、可以提高开发效率，这无可否认。但是我们还可以让它更方便一些 ———— jQuery插件</p>
+			</section>
+			<section class="tl">
+				<p>优秀的jQuery插件：</p>
+				<ul>
+					<li>layer</li>
+					<li>LAB.js</li>
+					<li>jquery.cookie.js</li>
+					<li>jquery.validate.js</li>
+				</ul>
+				<p>等等.....</p>
+			</section>
+			<section class="tl">
+				<p>使用插件的注意事项：</p>
+				<ul>
+					<li>插件的文件大小和兼容性</li>
+					<li class="fragment">插件的文档是否详细明了、扩展性是否强，作者是否有在维护</li>
+					<li class="fragment">同一个网站不可使用相同类型的插件两次以上</li>
+					<li class="fragment">安装是否简单、快捷、快速上手，无较大的学习成本</li>
+					<li class="fragment">使用时保留版本和完整文件结构，方便升级及排察问题</li>
+					<li class="fragment">异步/选择性加载插件</li>
+				</ul>
+			</section>
+			<section>
+				<pre><code class="javascript">
+if(element.length){	
+	FUN.loadCSS('/path/js.pulg/file.css');
+	$.LAB.script('/path/js.pulg/file.js')
+	 .script(function(){
+	 	//使用插件
+	 })
+}
+				</code></pre> 
+			</section>
+
+			<section>
+				<section>
+					<h4>最近写了2个插件：</h4>
+					<ul>
+						<li>jquery.nail.js</li>
+						<li>jquery.voteStar.js</li>
+					</ul>
+				</section>
+				<section class="tl">
+					<p>一个钉子，用于固定页面元素</p>
+					<p>jquery.nail.js</p>
+					<p><a href="https://github.com/jmjweb/jquery.nail.js" target="_blank">https://github.com/jmjweb/jquery.nail.js</a></p>
+				</section>
+				<section class="tl">
+					<p>评分星星</p>
+					<p>jquery.voteStar.js</p>
+					<p><a href="https://github.com/jmjweb/jquery.voteStar.js" target="_blank">https://github.com/jmjweb/jquery.voteStar.js</a></p>
+				</section>
+
+			</section>
+
+			<section>
+				<h1>The End</h1>
+				<p class="" style="font-size:.7em;">
+					<small>Created by <a href="https://github.com/jmjweb" target="_blank">江大侠</a></small>
+				</p>
+			</section>
+
+
+	    </div>	<!-- end .slides -->
+	</div>	<!-- end .reveal -->
+
+	<!-- 画笔 -->
+	<canvas id="drawBoard" class="draw-board" width="1920" height="979" style="display:none"></canvas>
+</body>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+<script>
+
+	// Full list of configuration options available at:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		help: true,
+		history: true,
+		transition: 'default', // none/fade/slide/convex/concave/zoom
+		// parallaxBackgroundImage: 'source/reveal-parallax-1.jpg',
+
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.pack.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true },
+			{ src: 'plugin/notes/notes.js', async: true },
+			{ src: 'plugin/brush/brush.js', async: true}
+		]
+	});
+
+</script>
+</html>
